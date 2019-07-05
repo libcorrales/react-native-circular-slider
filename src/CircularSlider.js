@@ -6,6 +6,8 @@ import range from 'lodash.range';
 import { interpolateHcl as interpolateGradient } from 'd3-interpolate';
 import ClockFace from './ClockFace';
 
+const PADDING = 100;
+const sliderOffset = 1.28;
 
 function calculateArcColor(index0, segments, gradientColorFrom, gradientColorTo) {
   const interpolate = interpolateGradient(gradientColorFrom, gradientColorTo);
@@ -151,10 +153,11 @@ export default class CircularSlider extends PureComponent {
     const stop = calculateArcCircle(segments - 1, segments, radius, startAngle, angleLength);
 
     return (
-      <View style={{ width: containerWidth, height: containerWidth }} onLayout={this.onLayout}>
+      <View style={{ width: containerWidth + PADDING, height: containerWidth + PADDING,  justifyContent:"center", alignItems: 'center', backgroundColor: "gray" }} onLayout={this.onLayout}>
         <Svg
-          height={containerWidth}
-          width={containerWidth}
+          style={{ justifyContent:"center", alignItems: 'center', marginHorizontal: PADDING / 2}}
+          height={containerWidth + PADDING}
+          width={containerWidth + PADDING}
           ref={circle => this._circle = circle}
         >
           <Defs>
@@ -176,7 +179,7 @@ export default class CircularSlider extends PureComponent {
             ##### Circle
           */}
 
-          <G transform={{ translate: `${strokeWidth/2 + radius + 1}, ${strokeWidth/2 + radius + 1}` }}>
+          <G x={PADDING / 2} y={PADDING / 2} transform={{ translate: `${strokeWidth/2 + radius + 1}, ${strokeWidth/2 + radius + 1}` }}>
             <Circle
               r={radius}
               strokeWidth={strokeWidth}
@@ -211,10 +214,9 @@ export default class CircularSlider extends PureComponent {
             {/*
               ##### Stop Icon
             */}
-
             <G
               fill={gradientColorTo}
-              transform={{ translate: `${stop.toX}, ${stop.toY}` }}
+              transform={{ translate: `${stop.toX*sliderOffset}, ${stop.toY*sliderOffset}` }}
               onPressIn={() => this.setState({ angleLength: angleLength + Math.PI / 2 })}
               {...this._wakePanResponder.panHandlers}
             >
@@ -228,14 +230,13 @@ export default class CircularSlider extends PureComponent {
                 stopIcon
               }
             </G>
-
             {/*
               ##### Start Icon
             */}
 
             <G
               fill={gradientColorFrom}
-              transform={{ translate: `${start.fromX}, ${start.fromY}` }}
+              transform={{ translate: `${start.fromX*sliderOffset}, ${start.fromY*sliderOffset}` }}
               onPressIn={() => this.setState({ startAngle: startAngle - Math.PI / 2, angleLength: angleLength + Math.PI / 2 })}
               {...this._sleepPanResponder.panHandlers}
             >
