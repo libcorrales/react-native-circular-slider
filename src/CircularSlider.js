@@ -7,7 +7,7 @@ import { interpolateHcl as interpolateGradient } from 'd3-interpolate';
 import ClockFace from './ClockFace';
 
 const PADDING = 100;
-const sliderOffset = 1.28;
+const sliderOffset = 1.2;
 
 function calculateArcColor(index0, segments, gradientColorFrom, gradientColorTo) {
   const interpolate = interpolateGradient(gradientColorFrom, gradientColorTo);
@@ -145,7 +145,7 @@ export default class CircularSlider extends PureComponent {
 
   render() {
     const { startAngle, angleLength, segments, strokeWidth, radius, gradientColorFrom, gradientColorTo, bgCircleColor,
-      showClockFace, clockFaceColor, startIcon, stopIcon } = this.props;
+      showClockFace, clockFaceColor, startIcon, stopIcon, hasRange } = this.props;
 
     const containerWidth = this.getContainerWidth();
 
@@ -153,7 +153,7 @@ export default class CircularSlider extends PureComponent {
     const stop = calculateArcCircle(segments - 1, segments, radius, startAngle, angleLength);
 
     return (
-      <View style={{ width: containerWidth + PADDING, height: containerWidth + PADDING,  justifyContent:"center", alignItems: 'center', backgroundColor: "gray" }} onLayout={this.onLayout}>
+      <View style={{ width: containerWidth + PADDING, height: containerWidth + PADDING,  justifyContent:"center", alignItems: 'center' }} onLayout={this.onLayout}>
         <Svg
           style={{ justifyContent:"center", alignItems: 'center', marginHorizontal: PADDING / 2}}
           height={containerWidth + PADDING}
@@ -180,7 +180,7 @@ export default class CircularSlider extends PureComponent {
           */}
 
           <G x={PADDING / 2} y={PADDING / 2} transform={{ translate: `${strokeWidth/2 + radius + 1}, ${strokeWidth/2 + radius + 1}` }}>
-            <Circle
+            {/* <Circle
               r={radius}
               strokeWidth={strokeWidth}
               fill="transparent"
@@ -209,7 +209,7 @@ export default class CircularSlider extends PureComponent {
                   />
                 )
               })
-            }
+            } */}
 
             {/*
               ##### Stop Icon
@@ -234,6 +234,7 @@ export default class CircularSlider extends PureComponent {
               ##### Start Icon
             */}
 
+            {hasRange ?
             <G
               fill={gradientColorFrom}
               transform={{ translate: `${start.fromX*sliderOffset}, ${start.fromY*sliderOffset}` }}
@@ -249,7 +250,9 @@ export default class CircularSlider extends PureComponent {
               {
                 startIcon
               }
-            </G>
+            </G> : null}
+
+
           </G>
         </Svg>
       </View>
